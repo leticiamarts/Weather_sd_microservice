@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: Weather Cache Microservice
+  description: Microsserviço de cache para dados meteorológicos com integração OpenWeatherMap
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor local de desenvolvimento
+paths:
+  /weather:
+    get:
+      tags:
+        - Weather
+      summary: Obtém dados meteorológicos para uma cidade
+      description: Retorna dados em cache ou busca novos dados na API externa
+      parameters:
+        - name: city
+          in: query
+          description: Nome da cidade para consulta
+          required: true
+          schema:
+            type: string
+            example: "Rio de Janeiro"
+      responses:
+        '200':
+          description: Dados meteorológicos retornados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherData'
+        '400':
+          description: Parâmetro city não fornecido
+        '500':
+          description: Erro ao consultar API externa
+components:
+  schemas:
+    WeatherData:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Sao Paulo"
+        main:
+          type: object
+          properties:
+            temp:
+              type: number
+              example: 298.15
+        timestamp_cache:
+          type: string
+          format: date-time
+          example: "2023-10-05T15:30:00"
